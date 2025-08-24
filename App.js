@@ -70,87 +70,188 @@ export default function App() {
 
   const renderDashboard = () => (
     <>
+      {/* Motion Alert Banner */}
+      {data.motionDetected && (
+        <View style={styles.alertBanner}>
+          <View style={styles.alertBannerLeft}>
+            <Text style={styles.alertIcon}>⚠️</Text>
+            <View>
+              <Text style={styles.alertTitle}>Motion Detected!</Text>
+              <Text style={styles.alertSubtitle}>Intrusion at {data.distance}cm distance</Text>
+            </View>
+          </View>
+          <TouchableOpacity style={styles.alertButton} onPress={() => showToastMessage('🚨 Responding to intrusion!')}>
+            <Text style={styles.alertButtonText}>RESPOND</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* System Overview Card */}
+      <View style={styles.overviewCard}>
+        <Text style={styles.overviewTitle}>System Overview</Text>
+        <View style={styles.overviewStats}>
+          <View style={styles.overviewItem}>
+            <View style={[styles.overviewIcon, { backgroundColor: '#E8F5E8' }]}>
+              <Text style={styles.overviewIconText}>🟢</Text>
+            </View>
+            <Text style={styles.overviewLabel}>Status</Text>
+            <Text style={[styles.overviewValue, { color: '#4CAF50' }]}>Online</Text>
+          </View>
+          <View style={styles.overviewItem}>
+            <View style={[styles.overviewIcon, { backgroundColor: '#E3F2FD' }]}>
+              <Text style={styles.overviewIconText}>🛡️</Text>
+            </View>
+            <Text style={styles.overviewLabel}>Protection</Text>
+            <Text style={[styles.overviewValue, { color: '#2196F3' }]}>Active</Text>
+          </View>
+          <View style={styles.overviewItem}>
+            <View style={[styles.overviewIcon, { backgroundColor: '#FFF3E0' }]}>
+              <Text style={styles.overviewIconText}>⚡</Text>
+            </View>
+            <Text style={styles.overviewLabel}>Power</Text>
+            <Text style={[styles.overviewValue, { color: '#FF9800' }]}>{data.batteryLevel}%</Text>
+          </View>
+        </View>
+      </View>
+
       {/* Quick Stats Cards */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickStats}>
-        <View style={[styles.quickStatCard, { backgroundColor: '#4CAF50' }]}>
-          <Text style={styles.quickStatIcon}>🔋</Text>
-          <Text style={styles.quickStatValue}>{data.batteryLevel}%</Text>
-          <Text style={styles.quickStatLabel}>Battery</Text>
-        </View>
-        
-        <View style={[styles.quickStatCard, { backgroundColor: '#FF9800' }]}>
-          <Text style={styles.quickStatIcon}>☀️</Text>
-          <Text style={styles.quickStatValue}>{data.solarVoltage}V</Text>
-          <Text style={styles.quickStatLabel}>Solar</Text>
-        </View>
-        
-        <View style={[styles.quickStatCard, { backgroundColor: '#2196F3' }]}>
-          <Text style={styles.quickStatIcon}>📶</Text>
-          <Text style={styles.quickStatValue}>{data.wifiStrength}/4</Text>
-          <Text style={styles.quickStatLabel}>WiFi</Text>
-        </View>
-      </ScrollView>
+      <View style={styles.statsSection}>
+        <Text style={styles.sectionTitle}>System Status</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickStats}>
+          <View style={styles.statCard}>
+            <View style={[styles.statCardHeader, { backgroundColor: '#4CAF50' }]}>
+              <Text style={styles.statCardIcon}>🔋</Text>
+            </View>
+            <Text style={styles.statCardValue}>{data.batteryLevel}%</Text>
+            <Text style={styles.statCardLabel}>Battery Level</Text>
+            <View style={styles.statCardProgress}>
+              <View style={[styles.statCardProgressFill, { width: `${data.batteryLevel}%`, backgroundColor: '#4CAF50' }]} />
+            </View>
+          </View>
+          
+          <View style={styles.statCard}>
+            <View style={[styles.statCardHeader, { backgroundColor: '#FF9800' }]}>
+              <Text style={styles.statCardIcon}>☀️</Text>
+            </View>
+            <Text style={styles.statCardValue}>{data.solarVoltage}V</Text>
+            <Text style={styles.statCardLabel}>Solar Power</Text>
+            <View style={styles.statCardProgress}>
+              <View style={[styles.statCardProgressFill, { width: '85%', backgroundColor: '#FF9800' }]} />
+            </View>
+          </View>
+          
+          <View style={styles.statCard}>
+            <View style={[styles.statCardHeader, { backgroundColor: '#2196F3' }]}>
+              <Text style={styles.statCardIcon}>📶</Text>
+            </View>
+            <Text style={styles.statCardValue}>{data.wifiStrength}/4</Text>
+            <Text style={styles.statCardLabel}>WiFi Signal</Text>
+            <View style={styles.statCardProgress}>
+              <View style={[styles.statCardProgressFill, { width: `${data.wifiStrength * 25}%`, backgroundColor: '#2196F3' }]} />
+            </View>
+          </View>
+        </ScrollView>
+      </View>
 
       {/* Environmental Monitoring */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Environmental Monitoring</Text>
         
-        <View style={[styles.envCard, { borderLeftColor: '#FF9800' }]}>
-          <View style={styles.envCardContent}>
-            <Text style={styles.envIcon}>🌡️</Text>
-            <View style={styles.envInfo}>
-              <Text style={styles.envLabel}>Temperature</Text>
-              <Text style={[styles.envValue, { color: '#FF9800' }]}>{data.temperature} °C</Text>
+        <View style={styles.envGrid}>
+          <View style={styles.envCardNew}>
+            <View style={styles.envCardTop}>
+              <View style={[styles.envIconContainer, { backgroundColor: '#FFE0B2' }]}>
+                <Text style={styles.envIconNew}>🌡️</Text>
+              </View>
+              <View style={styles.envTrendContainer}>
+                <Text style={styles.envTrend}>↗ +1.2°</Text>
+              </View>
+            </View>
+            <Text style={styles.envLabelNew}>Temperature</Text>
+            <Text style={[styles.envValueNew, { color: '#FF9800' }]}>{data.temperature}°C</Text>
+            <View style={[styles.envProgressNew, { backgroundColor: '#FFE0B2' }]}>
+              <View style={[styles.envProgressFillNew, { backgroundColor: '#FF9800', width: `${Math.min(parseFloat(data.temperature) * 2.5, 100)}%` }]} />
             </View>
           </View>
-          <View style={[styles.progressBar, { backgroundColor: '#FFE0B2' }]}>
-            <View style={[styles.progressFill, { backgroundColor: '#FF9800', width: `${Math.min(parseFloat(data.temperature) * 2.5, 100)}%` }]} />
+
+          <View style={styles.envCardNew}>
+            <View style={styles.envCardTop}>
+              <View style={[styles.envIconContainer, { backgroundColor: '#E3F2FD' }]}>
+                <Text style={styles.envIconNew}>💧</Text>
+              </View>
+              <View style={styles.envTrendContainer}>
+                <Text style={styles.envTrend}>→ 0.5%</Text>
+              </View>
+            </View>
+            <Text style={styles.envLabelNew}>Humidity</Text>
+            <Text style={[styles.envValueNew, { color: '#2196F3' }]}>{data.humidity}%</Text>
+            <View style={[styles.envProgressNew, { backgroundColor: '#E3F2FD' }]}>
+              <View style={[styles.envProgressFillNew, { backgroundColor: '#2196F3', width: `${parseFloat(data.humidity)}%` }]} />
+            </View>
           </View>
         </View>
 
-        <View style={[styles.envCard, { borderLeftColor: '#2196F3' }]}>
-          <View style={styles.envCardContent}>
-            <Text style={styles.envIcon}>💧</Text>
-            <View style={styles.envInfo}>
-              <Text style={styles.envLabel}>Humidity</Text>
-              <Text style={[styles.envValue, { color: '#2196F3' }]}>{data.humidity} %</Text>
+        <View style={styles.soilCard}>
+          <View style={styles.soilCardHeader}>
+            <View style={[styles.envIconContainer, { backgroundColor: '#E8F5E8' }]}>
+              <Text style={styles.envIconNew}>🌱</Text>
             </View>
-          </View>
-          <View style={[styles.progressBar, { backgroundColor: '#E3F2FD' }]}>
-            <View style={[styles.progressFill, { backgroundColor: '#2196F3', width: `${parseFloat(data.humidity)}%` }]} />
-          </View>
-        </View>
-
-        <View style={[styles.envCard, { borderLeftColor: '#4CAF50' }]}>
-          <View style={styles.envCardContent}>
-            <Text style={styles.envIcon}>🌱</Text>
-            <View style={styles.envInfo}>
-              <Text style={styles.envLabel}>Soil Moisture</Text>
-              <Text style={[styles.envValue, { color: '#4CAF50' }]}>{data.soilMoisture} %</Text>
+            <View>
+              <Text style={styles.soilTitle}>Soil Moisture</Text>
+              <Text style={styles.soilSubtitle}>Optimal range: 30-70%</Text>
             </View>
+            <Text style={[styles.soilValue, { color: '#4CAF50' }]}>{data.soilMoisture}%</Text>
           </View>
-          <View style={[styles.progressBar, { backgroundColor: '#E8F5E8' }]}>
-            <View style={[styles.progressFill, { backgroundColor: '#4CAF50', width: `${parseFloat(data.soilMoisture)}%` }]} />
+          <View style={[styles.soilProgress, { backgroundColor: '#E8F5E8' }]}>
+            <View style={[styles.soilProgressFill, { backgroundColor: '#4CAF50', width: `${parseFloat(data.soilMoisture)}%` }]} />
           </View>
+          <Text style={styles.soilStatus}>
+            {parseFloat(data.soilMoisture) < 30 ? '🔴 Too Dry' : 
+             parseFloat(data.soilMoisture) > 70 ? '🔵 Too Wet' : '🟢 Optimal'}
+          </Text>
         </View>
       </View>
 
-      {/* Intrusion Detection */}
+      {/* Security Status */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Intrusion Detection</Text>
+        <Text style={styles.sectionTitle}>Security Status</Text>
         
-        <View style={styles.intrusionCards}>
-          <View style={styles.intrusionCard}>
-            <Text style={styles.intrusionIcon}>🎯</Text>
-            <Text style={styles.intrusionLabel}>Motion</Text>
-            <Text style={styles.intrusionValue}>{data.motionDetected ? 'DETECTED' : 'Clear'}</Text>
+        <View style={styles.securityCard}>
+          <View style={styles.securityHeader}>
+            <View style={[styles.securityIcon, { backgroundColor: data.motionDetected ? '#FFEBEE' : '#E8F5E8' }]}>
+              <Text style={styles.securityIconText}>
+                {data.motionDetected ? '🚨' : '🛡️'}
+              </Text>
+            </View>
+            <View style={styles.securityInfo}>
+              <Text style={styles.securityTitle}>
+                {data.motionDetected ? 'INTRUSION DETECTED' : 'ALL CLEAR'}
+              </Text>
+              <Text style={styles.securitySubtitle}>
+                Last scan: {new Date().toLocaleTimeString()}
+              </Text>
+            </View>
+            <View style={[styles.securityStatus, { 
+              backgroundColor: data.motionDetected ? '#f44336' : '#4CAF50' 
+            }]}>
+              <Text style={styles.securityStatusText}>
+                {data.motionDetected ? 'ALERT' : 'SAFE'}
+              </Text>
+            </View>
           </View>
           
-          <View style={styles.intrusionCard}>
-            <Text style={styles.intrusionIcon}>📏</Text>
-            <Text style={styles.intrusionLabel}>Distance</Text>
-            <Text style={styles.intrusionValue}>{data.distance}cm</Text>
-          </View>
+          {data.motionDetected && (
+            <View style={styles.securityDetails}>
+              <View style={styles.securityDetail}>
+                <Text style={styles.securityDetailLabel}>Detection Range:</Text>
+                <Text style={styles.securityDetailValue}>{data.distance}cm</Text>
+              </View>
+              <View style={styles.securityDetail}>
+                <Text style={styles.securityDetailLabel}>Threat Level:</Text>
+                <Text style={[styles.securityDetailValue, { color: '#f44336' }]}>HIGH</Text>
+              </View>
+            </View>
+          )}
         </View>
       </View>
     </>
@@ -834,39 +935,153 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  // Quick Stats
-  quickStats: {
-    paddingHorizontal: 15,
-    paddingVertical: 20,
+  // Alert Banner
+  alertBanner: {
+    backgroundColor: '#FFEBEE',
+    borderLeftWidth: 4,
+    borderLeftColor: '#f44336',
+    margin: 20,
+    marginBottom: 15,
+    padding: 16,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    elevation: 3,
+    shadowColor: '#f44336',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
   },
-  quickStatCard: {
-    width: 120,
-    height: 100,
-    borderRadius: 15,
-    marginRight: 15,
-    padding: 15,
+  alertBannerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  alertIcon: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  alertTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#f44336',
+    marginBottom: 2,
+  },
+  alertSubtitle: {
+    fontSize: 13,
+    color: '#666',
+  },
+  alertButton: {
+    backgroundColor: '#f44336',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  alertButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+
+  // Overview Card
+  overviewCard: {
+    backgroundColor: 'white',
+    margin: 20,
+    marginBottom: 15,
+    borderRadius: 16,
+    padding: 20,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+  },
+  overviewTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 16,
+  },
+  overviewStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  overviewItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  overviewIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 8,
+  },
+  overviewIconText: {
+    fontSize: 20,
+  },
+  overviewLabel: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 4,
+  },
+  overviewValue: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+
+  // Stats Section
+  statsSection: {
+    paddingHorizontal: 20,
+    marginBottom: 15,
+  },
+  quickStats: {
+    paddingTop: 10,
+  },
+  statCard: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 16,
+    marginRight: 15,
+    width: 140,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
   },
-  quickStatIcon: {
-    fontSize: 24,
-    marginBottom: 5,
+  statCardHeader: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
   },
-  quickStatValue: {
-    color: 'white',
+  statCardIcon: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 2,
   },
-  quickStatLabel: {
-    color: 'white',
-    fontSize: 12,
-    opacity: 0.9,
+  statCardValue: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 4,
+  },
+  statCardLabel: {
+    fontSize: 13,
+    color: '#666',
+    marginBottom: 12,
+  },
+  statCardProgress: {
+    height: 4,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 2,
+  },
+  statCardProgressFill: {
+    height: '100%',
+    borderRadius: 2,
   },
 
   // Sections
@@ -881,48 +1096,183 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
 
-  // Environmental Cards
-  envCard: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 12,
-    borderLeftWidth: 4,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+  // Environmental Cards - New Design
+  envGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
   },
-  envCardContent: {
+  envCardNew: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 16,
+    width: '48%',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+  },
+  envCardTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  envIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  envIconNew: {
+    fontSize: 18,
+  },
+  envTrendContainer: {
+    backgroundColor: '#f8f9fa',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  envTrend: {
+    fontSize: 11,
+    color: '#666',
+    fontWeight: '600',
+  },
+  envLabelNew: {
+    fontSize: 13,
+    color: '#666',
+    marginBottom: 4,
+  },
+  envValueNew: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 12,
+  },
+  envProgressNew: {
+    height: 4,
+    borderRadius: 2,
+  },
+  envProgressFillNew: {
+    height: '100%',
+    borderRadius: 2,
+  },
+
+  // Soil Card
+  soilCard: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+  },
+  soilCardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
   },
-  envIcon: {
-    fontSize: 24,
-    marginRight: 15,
+  soilTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 2,
   },
-  envInfo: {
+  soilSubtitle: {
+    fontSize: 12,
+    color: '#666',
+  },
+  soilValue: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginLeft: 'auto',
+  },
+  soilProgress: {
+    height: 6,
+    borderRadius: 3,
+    marginBottom: 8,
+  },
+  soilProgressFill: {
+    height: '100%',
+    borderRadius: 3,
+  },
+  soilStatus: {
+    fontSize: 13,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+
+  // Security Card
+  securityCard: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+  },
+  securityHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  securityIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  securityIconText: {
+    fontSize: 24,
+  },
+  securityInfo: {
     flex: 1,
   },
-  envLabel: {
-    fontSize: 14,
+  securityTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 2,
+  },
+  securitySubtitle: {
+    fontSize: 12,
     color: '#666',
-    marginBottom: 4,
   },
-  envValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  securityStatus: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
   },
-  progressBar: {
-    height: 4,
-    borderRadius: 2,
-    marginTop: 8,
+  securityStatusText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '700',
   },
-  progressFill: {
-    height: '100%',
-    borderRadius: 2,
+  securityDetails: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+  },
+  securityDetail: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  securityDetailLabel: {
+    fontSize: 13,
+    color: '#666',
+  },
+  securityDetailValue: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#333',
   },
 
   // Intrusion Detection
